@@ -1,15 +1,29 @@
 package pl.coderslab.petrolpricesproject.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.util.Set;
 
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
+@ToString
 @Table(name = "gas_stations")
 public class GasStations {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "place_id", nullable = false)
+    private String placeId;
 
     @Column(name = "formatted_address", nullable = false)
     private String formattedAddress;
@@ -20,57 +34,24 @@ public class GasStations {
     @Column(name = "opening_hours")
     private String openingHours;
 
-    @Column(name = "price", nullable = false)
-    private BigDecimal price;
+    @Column(name = "price_95")
+    private BigDecimal price95;
 
-    public GasStations(){
-    }
+    @Column(name = "price_98")
+    private BigDecimal price98;
 
-    public GasStations(Long id, String formattedAddress, String name, String openingHours, BigDecimal price) {
-        this.id = id;
-        this.formattedAddress = formattedAddress;
-        this.name = name;
-        this.openingHours = openingHours;
-        this.price = price;
-    }
+    @Column(name = "price_Diesel")
+    private BigDecimal priceDiesel;
 
-    public Long getId() {
-        return id;
-    }
+    @Column(name = "price_Gas")
+    private BigDecimal priceGas;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @Column(name = "price_update_date", nullable = false)
+    private OffsetDateTime priceUpdateDate;
 
-    public String getFormattedAddress() {
-        return formattedAddress;
-    }
+    @OneToMany(mappedBy = "gasStations")
+    private Set<GasStations_Users> gasStationsUsers;
 
-    public void setFormattedAddress(String formattedAddress) {
-        this.formattedAddress = formattedAddress;
-    }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getOpeningHours() {
-        return openingHours;
-    }
-
-    public void setOpeningHours(String openingHours) {
-        this.openingHours = openingHours;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
 }
+

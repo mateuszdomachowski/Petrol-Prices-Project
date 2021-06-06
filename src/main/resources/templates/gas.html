@@ -2,11 +2,76 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="pl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyCu7-2B-oQTbOAsryc1z1LAPaMiZYxWrsw"></script>
+    <script>
+
+        let map;
+        let service;
+        let infowindow;
+
+
+        function initMap() {
+            const location = new google.maps.LatLng(52.286981, 21.079256);
+
+            infowindow = new google.maps.InfoWindow();
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: location,
+                zoom: 15,
+            });
+
+            service = new google.maps.places.PlacesService(map);
+            service.nearbySearch({
+                location : location,
+                radius : 5000,
+                type : [ 'gas_station' ]
+            }, callback);
+
+
+            function callback(results, status) {
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                    for (var i = 0; i < results.length; i++) {
+                        createMarker(results[i]);
+                    }
+                }
+            }
+
+            function createMarker(place) {
+                var placeLoc = place.geometry.location;
+                var marker = new google.maps.Marker({
+                    map : map,
+                    position : place.geometry.location
+                });
+
+                google.maps.event.addListener(marker, 'click', function() {
+                    infowindow.setContent(place.name);
+                    infowindow.open(map, this);
+                });
+            }
+
+
+        }
+
+
+        google.maps.event.addDomListener(window, 'load', initMap);
+
+    </script>
     <title>Pierwsza stronka</title>
+
+    <style>
+        html, body, #map {
+            height: 100%;
+            margin: 0px;
+            padding: 0px;
+        }
+    </style>
+
 </head>
 <body>
 
-<h1>Tu będzie sztos</h1>
+<div id="map">
+
+</div>
 
 </body>
 </html>

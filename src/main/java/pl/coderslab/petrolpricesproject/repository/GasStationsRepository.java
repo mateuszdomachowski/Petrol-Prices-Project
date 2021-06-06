@@ -7,6 +7,4 @@ import pl.coderslab.petrolpricesproject.entity.GasStations;
 @Repository
 public interface GasStationsRepository extends JpaRepository<GasStations, Long> {
 
-
-
 }
