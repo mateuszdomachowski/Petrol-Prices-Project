@@ -1,7 +1,7 @@
 package pl.coderslab.petrolpricesproject.service.implementation;
 
 import org.springframework.stereotype.Service;
-import pl.coderslab.petrolpricesproject.entity.GasStations;
+import pl.coderslab.petrolpricesproject.entity.GasStation;
 import pl.coderslab.petrolpricesproject.repository.GasStationsRepository;
 import pl.coderslab.petrolpricesproject.service.GasStationsService;
 
@@ -17,7 +17,7 @@ public class GasStationsServiceImplementation implements GasStationsService {
     }
 
     @Override
-    public List<GasStations> getAllGasStations() {
+    public List<GasStation> getAllGasStations() {
         return gasStationsRepository.findAll();
     }
 }

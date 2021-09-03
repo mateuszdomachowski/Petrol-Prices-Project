@@ -13,18 +13,18 @@ import javax.persistence.*;
 @Entity
 @ToString
 @Table
-public class GasStations_Users {
+public class GasStationUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "gasStations_id", insertable = false, updatable = false)
-    private GasStations gasStations;
+    @JoinColumn(name = "gasStations_id", referencedColumnName = "place_id",insertable = false, updatable = false)
+    private GasStation gasStationsId;
 
     @ManyToOne
-    @JoinColumn(name = "users_id", insertable = false, updatable = false)
-    private Users users;
+    @JoinColumn(name = "users_id",insertable = false, updatable = false)
+    private User usersId;
 
 }

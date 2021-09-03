@@ -1,9 +1,7 @@
 package pl.coderslab.petrolpricesproject.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -11,18 +9,20 @@ import java.time.OffsetDateTime;
 import java.util.Set;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @ToString
+@Component
 @Table(name = "gas_stations")
-public class GasStations {
+public class GasStation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "place_id", nullable = false)
+    @Column(name = "place_id", nullable = false, unique = true)
     private String placeId;
 
     @Column(name = "formatted_address", nullable = false)
@@ -49,8 +49,8 @@ public class GasStations {
     @Column(name = "price_update_date", nullable = false)
     private OffsetDateTime priceUpdateDate;
 
-    @OneToMany(mappedBy = "gasStations")
-    private Set<GasStations_Users> gasStationsUsers;
+    @OneToMany(mappedBy = "gasStationsId", fetch = FetchType.LAZY)
+    private Set<GasStationUser> gasStationsUsers;
 
 
 }
