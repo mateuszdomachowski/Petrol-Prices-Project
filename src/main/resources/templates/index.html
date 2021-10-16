@@ -21,36 +21,71 @@
         let map;
         let service;
         let infowindow;
-
         let lat;
         let long;
 
 
         function initMap() {
 
-            const location = new google.maps.LatLng(53.48333192702085, 18.75244503237444);
-
-            map = new google.maps.Map(document.getElementById("map"), {
-                center: location,
-                zoom: 13,
-            });
-
-            service = new google.maps.places.PlacesService(map);
-            service.textSearch({location : location, radius : 1000, type : [ 'gas_station' ]}, callback);
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                map.innerHTML = "Geolocation is not supported by this browser.";
+            }
 
 
-            infowindow = new google.maps.InfoWindow();
+            function showPosition(position) {
+
+                lat = position.coords.latitude;
+                long = position.coords.longitude;
+
+                let location = new google.maps.LatLng(lat, long);
+
+                map = new google.maps.Map(document.getElementById("map"), {
+                    center: location,
+                    zoom: 13,
+                });
+
+                getPlaceService(location);
+            }
+
+            function getPlaceService(location) {
+                service = new google.maps.places.PlacesService(map);
+                service.textSearch({location : location, radius : 1000, type : [ 'gas_station' ]}, callback);
+            }
+
+            function showError(error) {
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        x.innerHTML = "User denied the request for Geolocation."
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        x.innerHTML = "Location information is unavailable."
+                        break;
+                    case error.TIMEOUT:
+                        x.innerHTML = "The request to get user location timed out."
+                        break;
+                    case error.UNKNOWN_ERROR:
+                        x.innerHTML = "An unknown error occurred."
+                        break;
+                }
+            }
+
 
             function callback(results, status) {
                 if (status === google.maps.places.PlacesServiceStatus.OK) {
                     for (var i = 0; i < results.length; i++) {
-                        var place = results[i];
                         createMarker(results[i]);
                     }
                 }
             }
 
             function createMarker(place) {
+
+
+
+                infowindow = new google.maps.InfoWindow();
+
                 var marker = new google.maps.Marker({
                     map : map,
                     position : place.geometry.location
@@ -58,8 +93,10 @@
 
 
                 google.maps.event.addListener(marker, 'click', function() {
-                    infowindow.setContent('<div><strong>' + place.name + '</strong><br>' +
+                    infowindow.setContent(
+                        '<div><strong>' + place.name + '</strong><br>' +
                         '<p>' + place.formatted_address + '</p></div>');
+
                     infowindow.open(map, marker);
                 });
             }
@@ -80,61 +117,7 @@
 </head>
 <body>
 
-    <p>Click the button to get your coordinates.</p>
-    <button onClick="getLocation()">My location</button>
-    <div id="geolok"></div>
-
-    <script>
-
-        var x = document.getElementById("geolok");
-
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition, showError);
-            } else {
-                x.innerHTML = "Geolocation is not supported by this browser.";
-            }
-        }
-
-        function showPosition(position) {
-            // x.innerHTML = "Latitude: " + position.coords.latitude +
-            //     "<br>Longitude: " + position.coords.longitude;
-            //
-            lat = position.coords.latitude;
-            long = position.coords.longitude;
-
-            // var latlon = position.coords.latitude + "," + position.coords.longitude;
-            // var img_url = "https://maps.googleapis.com/maps/api/js?libraries=places&center="+latlon+"&key=AIzaSyCu7-2B-oQTbOAsryc1z1LAPaMiZYxWrsw";
-            // document.getElementById("map").innerHTML = "<img src='"+img_url+"'>";
-
-            const location2 = new google.maps.LatLng(lat, long);
-
-            map = new google.maps.Map(document.getElementById("map"), {
-                center: location2,
-                zoom: 13,
-            });
-        }
-
-        function showError(error) {
-            switch (error.code) {
-                case error.PERMISSION_DENIED:
-                    x.innerHTML = "User denied the request for Geolocation."
-                    break;
-                case error.POSITION_UNAVAILABLE:
-                    x.innerHTML = "Location information is unavailable."
-                    break;
-                case error.TIMEOUT:
-                    x.innerHTML = "The request to get user location timed out."
-                    break;
-                case error.UNKNOWN_ERROR:
-                    x.innerHTML = "An unknown error occurred."
-                    break;
-            }
-        }
-    </script>
-
-    <div id="map"></div>
-
+<div id="map"></div>
 
 </body>
 </html>
